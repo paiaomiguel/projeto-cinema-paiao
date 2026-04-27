@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineVault — Contato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0a; --card: #1a1a1a;
+      --gold: #c9a84c; --red: #b22222;
+      --text: #e8e0d0; --muted: #7a7060;
+      --border: #2a2a2a; --input-bg: #111;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 2rem 4rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); z-index: 100; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); }
+    .logo span { color: var(--text); font-style: italic; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; margin-left: 2.5rem; transition: color 0.3s; }
+    nav a:hover, nav a.active { color: var(--gold); }
+    main { max-width: 640px; margin: 0 auto; padding: 6rem 2rem 8rem; animation: fadeUp 0.7s ease both; }
+    .page-label { font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--red); margin-bottom: 1.2rem; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.1; margin-bottom: 0.8rem; }
+    .page-title em { color: var(--gold); font-style: italic; }
+    .page-sub { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 3.5rem; }
+    .divider { width: 50px; height: 1px; background: var(--gold); margin-bottom: 3.5rem; }
+    .form-group { margin-bottom: 1.8rem; }
+    label { display: block; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; }
+    input, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 3px; color: var(--text); font-family: 'Jost', sans-serif; font-size: 0.95rem; font-weight: 300; padding: 0.9rem 1.1rem; transition: border-color 0.3s, box-shadow 0.3s; outline: none; }
+    input:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+    textarea { resize: vertical; min-height: 140px; }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+    .btn { display: inline-flex; align-items: center; gap: 0.6rem; background: transparent; border: 1px solid var(--gold); color: var(--gold); font-family: 'Jost', sans-serif; font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; padding: 0.9rem 2.2rem; border-radius: 2px; cursor: pointer; transition: background 0.3s, color 0.3s, transform 0.2s; margin-top: 0.5rem; }
+    .btn:hover { background: var(--gold); color: #0a0a0a; transform: translateY(-2px); }
+    #success-msg { display: none; margin-top: 1.5rem; padding: 1.1rem 1.4rem; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); border-radius: 3px; color: var(--gold); font-size: 0.88rem; }
+    footer { text-align: center; padding: 2.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) { header { padding: 1.5rem; } main { padding: 4rem 1.5rem 6rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Cine<span>Vault</span></div>
+    <nav>
+      <a href="index.html">Filmes</a>
+      <a href="contato.html" class="active">Contato</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="page-label">✦ Fale Comigo</p>
+    <h1 class="page-title">Entre em<br/><em>Contato</em></h1>
+    <div class="divider"></div>
+    <p class="page-sub">Tem uma dica de filme, quer trocar uma ideia sobre cinema, ou só quer dar um oi? Me manda uma mensagem!</p>
+
+    <div id="contact-form">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Seu nome completo" />
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" />
+      </div>
+      <div class="form-group">
+        <label for="mensagem">Mensagem</label>
+        <textarea id="mensagem" placeholder="Escreva sua mensagem aqui..."></textarea>
+      </div>
+      <button class="btn" onclick="enviarMensagem()">✦ Enviar Mensagem</button>
+      <div id="success-msg">🎬 Mensagem enviada com sucesso! Responderei em breve.</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 CineVault · Feito com paixão pelo cinema</p>
+  </footer>
+
+  <script>
+    // Função JavaScript: validação e feedback do formulário de contato
+    function enviarMensagem() {
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mensagem = document.getElementById('mensagem').value.trim();
+
+      if (!nome || !email || !mensagem) {
+        alert('Por favor, preencha todos os campos antes de enviar!');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Por favor, insira um e-mail válido.');
+        return;
+      }
+
+      const successMsg = document.getElementById('success-msg');
+      successMsg.style.display = 'block';
+
+      document.getElementById('nome').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('mensagem').value = '';
+
+      setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
+    }
+  </script>
+</body>
+</html>
