@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineVault — Meus Filmes Favoritos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --card: #1a1a1a;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --red: #b22222;
+      --text: #e8e0d0;
+      --muted: #7a7060;
+      --border: #2a2a2a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+    }
+
+    .logo span { color: var(--text); font-style: italic; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-left: 2.5rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover, nav a.active { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 7rem 2rem 5rem;
+    }
+
+    .hero-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1.05;
+      color: var(--text);
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero h1 em { color: var(--gold); font-style: italic; }
+
+    .hero p {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 1rem;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 2rem auto 0;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center;
+      padding: 4rem 2rem 2rem;
+    }
+
+    .section-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+    }
+
+    /* GRID */
+    .films-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 4rem 6rem;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(.16,1,.3,1), box-shadow 0.4s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.22s; }
+    .card:nth-child(3) { animation-delay: 0.34s; }
+    .card:nth-child(4) { animation-delay: 0.46s; }
+    .card:nth-child(5) { animation-delay: 0.58s; }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--gold);
+    }
+
+    .card-poster-wrapper { overflow: hidden; position: relative; }
+
+    .card-poster-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(10,10,10,0.85), transparent);
+      pointer-events: none;
+    }
+
+    .card-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85);
+      transition: filter 0.4s ease, transform 0.6s ease;
+    }
+
+    .card:hover .card-poster {
+      filter: saturate(1.1);
+      transform: scale(1.04);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .card-body { padding: 1.4rem 1.5rem 1.6rem; }
+
+    .card-year {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-stars { margin-top: 1rem; color: var(--gold); font-size: 0.9rem; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; }
+      .films-grid { padding: 1.5rem 1.5rem 4rem; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Cine<span>Vault</span></div>
+    <nav>
+      <a href="index.html" class="active">Filmes</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="hero-label">✦ Curadoria Pessoal</p>
+    <h1>Meus Filmes<br/><em>Favoritos</em></h1>
+    <p>Uma coleção íntima dos filmes que mais me marcaram.</p>
+    <div class="divider"></div>
+  </section>
+
+  <div class="section-title">
+    <h2>A Vitrine</h2>
+  </div>
+
+  <section class="films-grid">
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <span class="card-badge">Favorito</span>
+        <img class="card-poster"
+          src="https://upload.wikimedia.org/wikipedia/en/8/8f/The_Shawshank_Redemption_film_poster.jpg"
+          alt="Um Sonho de Liberdade"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">1994 · Drama</p>
+        <h2 class="card-title">Um Sonho de Liberdade</h2>
+        <p class="card-desc">Dois homens unem-se em amizade dentro de uma prisão e encontram redenção através da esperança.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <img class="card-poster"
+          src="https://upload.wikimedia.org/wikipedia/en/a/a9/The_Godfather_%28novel%29.jpg"
+          alt="O Poderoso Chefão"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">1972 · Crime</p>
+        <h2 class="card-title">O Poderoso Chefão</h2>
+        <p class="card-desc">A saga épica de uma família mafiosa na América. Poder, lealdade e inevitável tragédia.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <span class="card-badge">Cult</span>
+        <img class="card-poster"
+          src="https://upload.wikimedia.org/wikipedia/en/8/8d/Interstellar_film_poster.jpg"
+          alt="Interestelar"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">2014 · Ficção Científica</p>
+        <h2 class="card-title">Interestelar</h2>
+        <p class="card-desc">Uma viagem além das fronteiras do espaço e do tempo, onde o amor transcende as dimensões do universo.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <img class="card-poster"
+          src="https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Knight_Poster.jpg"
+          alt="O Cavaleiro das Trevas"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">2008 · Ação</p>
+        <h2 class="card-title">O Cavaleiro das Trevas</h2>
+        <p class="card-desc">Quando o Coringa desencadeia o caos em Gotham, Batman enfrenta sua maior provação moral.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <span class="card-badge">Clássico</span>
+        <img class="card-poster"
+          src="https://upload.wikimedia.org/wikipedia/en/c/c6/Schindler%27s_List_movie_poster.jpg"
+          alt="A Lista de Schindler"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">1993 · Drama / História</p>
+        <h2 class="card-title">A Lista de Schindler</h2>
+        <p class="card-desc">A história real de um homem que salvou mais de mil judeus durante o Holocausto. Devastador e essencial.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+  </section>
+
+  <footer>
+    <p>© 2025 CineVault · Feito com paixão pelo cinema · <a href="contato.html">Entre em contato</a></p>
+  </footer>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineVault — Meus Filmes Favoritos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --card: #1a1a1a;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --red: #b22222;
+      --text: #e8e0d0;
+      --muted: #7a7060;
+      --border: #2a2a2a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+    }
+
+    .logo span { color: var(--text); font-style: italic; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-left: 2.5rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover, nav a.active { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 7rem 2rem 5rem;
+    }
+
+    .hero-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1.05;
+      color: var(--text);
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero h1 em { color: var(--gold); font-style: italic; }
+
+    .hero p {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 1rem;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 2rem auto 0;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center;
+      padding: 4rem 2rem 2rem;
+    }
+
+    .section-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+    }
+
+    /* GRID */
+    .films-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 4rem 6rem;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(.16,1,.3,1), box-shadow 0.4s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.22s; }
+    .card:nth-child(3) { animation-delay: 0.34s; }
+    .card:nth-child(4) { animation-delay: 0.46s; }
+    .card:nth-child(5) { animation-delay: 0.58s; }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--gold);
+    }
+
+    .card-poster-wrapper { overflow: hidden; position: relative; }
+
+    .card-poster-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(10,10,10,0.85), transparent);
+      pointer-events: none;
+    }
+
+    .card-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85);
+      transition: filter 0.4s ease, transform 0.6s ease;
+    }
+
+    .card:hover .card-poster {
+      filter: saturate(1.1);
+      transform: scale(1.04);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .card-body { padding: 1.4rem 1.5rem 1.6rem; }
+
+    .card-year {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-stars { margin-top: 1rem; color: var(--gold); font-size: 0.9rem; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; }
+      .films-grid { padding: 1.5rem 1.5rem 4rem; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Cine<span>Vault</span></div>
+    <nav>
+      <a href="index.html" class="active">Filmes</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="hero-label">✦ Curadoria Pessoal</p>
+    <h1>Meus Filmes<br/><em>Favoritos</em></h1>
+    <p>Uma coleção íntima dos filmes que mais me marcaram.</p>
+    <div class="divider"></div>
+  </section>
+
+  <div class="section-title">
+    <h2>A Vitrine</h2>
+  </div>
+
+  <section class="films-grid">
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <img class="card-poster"
+          src="chefao.jpg"
+          alt="O Poderoso Chefão"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">1972 · Crime</p>
+        <h2 class="card-title">O Poderoso Chefão</h2>
+        <p class="card-desc">A saga épica de uma família mafiosa na América. Poder, lealdade e inevitável tragédia.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <span class="card-badge">Cult</span>
+        <img class="card-poster"
+          src="estelar.jpeg"
+          alt="Interestelar"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">2014 · Ficção Científica</p>
+        <h2 class="card-title">Interestelar</h2>
+        <p class="card-desc">Uma viagem além das fronteiras do espaço e do tempo, onde o amor transcende as dimensões do universo.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-poster-wrapper">
+        <img class="card-poster"
+          src="trevas.png"
+          alt="O Cavaleiro das Trevas"/>
+      </div>
+      <div class="card-body">
+        <p class="card-year">2008 · Ação</p>
+        <h2 class="card-title">O Cavaleiro das Trevas</h2>
+        <p class="card-desc">Quando o Coringa desencadeia o caos em Gotham, Batman enfrenta sua maior provação moral.</p>
+        <p class="card-stars">★★★★★</p>
+      </div>
+    </article>
+    </article>
+
+  </section>
+
+  <footer>
+    <p>© 2025 CineVault · Feito com paixão pelo cinema · <a href="contato.html">Entre em contato</a></p>
+  </footer>
+
+</body>
+</html>
